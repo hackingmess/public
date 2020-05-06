@@ -1,0 +1,53 @@
+
+
+
+1. Revisar las actuales tareas de CRON 
+    sudo grep CRON /var/log/syslog 
+
+2. Buscar archivos relacionados al malware
+    find *kdevtmpfsi and *kinsing  y eliminarlos. 
+
+3. Crear nuestras propias versiones de los archivos en blanco 
+touch /tmp/kdevtmpfsi && touch /var/tmp/kinsing
+echo "everything is good here" > /tmp/kdevtmpfsi
+echo "everything is good here" > /var/tmp/kinsing
+cat /tmp/kdevtmpfsi && cat /var/tmp/kinsing
+
+4. Permitir que los archivos dentro de estos folders solo sean modificados por un usuario root
+
+chmod go-rwx /var/tmp
+chmod 1777 /tmp
+
+5. Opcional permitir solo a un usuaro root crear cron tabs 
+ 
+touch /etc/cron.allow
+echo “root” > /etc/cron.allow
+echo “{otherusername}” >> /etc/cron.allow 
+
+6. Reiniciar el servidor
+
+7. Verficiar las conexiones activas 
+sudo apt-get install tcpdump
+sudo lsof -nP -iTCP
+
+8.Monitoriar conexiones extranas de IP publicas, especialemente en puerto 80
+
+En caso de encontrar algunas , bloquear con ayuda de las IP tables 
+
+ejemplo:
+
+/sbin/iptables -A OUTPUT -p tcp -d 45.89.230.240 --dport 80 -j DROP 
+
+/sbin/iptables -A OUTPUT -p tcp -d 91.215.169.111 --dport 80 -j DROP 
+
+iptables -A INPUT -s 45.89.230.240 -j DROP 
+
+iptables -A INPUT -s 91.215.169.111 -j DROP 
+
+
+salvar Ip tables 
+
+/sbin/iptables-save 
+
+ y volver a revisar las conexiones activas. 
+
